@@ -11,19 +11,19 @@ public class Main {
 
         try {
 
-            Long tempoInicial = System.currentTimeMillis();
-            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdf-fundos/extrato-completo.pdf");
+            long tempoInicial = System.currentTimeMillis();
+            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf");
 
             PDDocument document = PDDocument.load(file);
 
             PDFTextStripper pdfTextStripper = new PDFTextStripper();
 
             String conteudo = pdfTextStripper.getText(document);
-            Long tempoFinal = System.currentTimeMillis();
+            long tempoFinal = System.currentTimeMillis();
 
             System.out.println(conteudo);
 
-            Long tempoExecucao = tempoFinal - tempoInicial;
+            long tempoExecucao = tempoFinal - tempoInicial;
 
             System.out.println("--------------------------------\n\n" + "Tempo de execução: " + tempoExecucao + "ms");
 
