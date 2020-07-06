@@ -11,8 +11,10 @@ public class Main {
 
         try {
 
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf";
+
             long tempoInicial = System.currentTimeMillis();
-            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf");
+            File file = new File(path);
 
             PDDocument document = PDDocument.load(file);
 
