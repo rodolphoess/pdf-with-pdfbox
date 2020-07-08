@@ -22,28 +22,4 @@ public class Endereco {
         return new Endereco(logradouro, complemento, numero, cep, cidade, estado);
     }
 
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
 }

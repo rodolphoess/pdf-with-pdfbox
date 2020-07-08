@@ -20,20 +20,4 @@ public class Movimentacao {
         return new Movimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
     }
 
-    public LocalDate getDataMovimentacao() {
-        return dataMovimentacao;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public double getValorMovimentado() {
-        return valorMovimentado;
-    }
-
-    public double getSaldoEmContaAposMovimentacao() {
-        return saldoEmContaAposMovimentacao;
-    }
-
 }

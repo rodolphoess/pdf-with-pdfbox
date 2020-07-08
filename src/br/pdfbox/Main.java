@@ -1,5 +1,7 @@
 package br.pdfbox;
 
+import br.pdfbox.dominio.ContaCorrente;
+import br.pdfbox.factory.ContaCorrenteFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -15,9 +17,10 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-
+            //Parâmetro de entrada para leitura do PDF.
             String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf";
 
+            /** Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java **/
             long tempoInicial = System.currentTimeMillis();
             File file = new File(path);
 
@@ -29,9 +32,17 @@ public class Main {
 
             String conteudo = pdfTextStripper.getText(document);
             long tempoFinal = System.currentTimeMillis();
+            /** Final do serviço geral de leitura de PDF. **/
 
+            /** Serviço para leitura de extrato de contas correntes. LeituraExtratoContasCorrentesPDF.java **/
             List<StringBuilder> clientes = quebrarStringPorCliente(conteudo);
 
+            List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
+
+            //TODO: Após retornar uma lista de ContaCorrente, fazer chamada aqui para transformar a lista em JSON.
+            /** Final serviço para leitura extrato de contas correntes. **/
+
+            /** Desnecessário até o catch **/
             for (StringBuilder cliente : clientes) {
                 System.out.println(cliente);
             }
