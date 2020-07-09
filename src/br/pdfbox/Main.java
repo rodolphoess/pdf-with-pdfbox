@@ -67,30 +67,26 @@ public class Main {
         List<StringBuilder> clientes = newArrayList();
         Scanner scanner = new Scanner(conteudo);
         StringBuilder cliente = new StringBuilder();
+        StringBuilder proximoCliente = new StringBuilder();
 
         while (scanner.hasNextLine()) {
 
             String linha = scanner.nextLine();
             cliente.append(linha);
 
-            if (linha.equals("")) {
-                clientes.add(cliente);
+            if (linha.equals("") && scanner.hasNextLine()) {
 
-                cliente = new StringBuilder();
+                linha = scanner.nextLine();
+                proximoCliente.append(linha);
+
+                if (!ContaCorrenteFactory.extrairNome(cliente).equals(ContaCorrenteFactory.extrairNome(proximoCliente))) {
+                    clientes.add(cliente);
+
+                    cliente = proximoCliente;
+                    proximoCliente = new StringBuilder();
+                }
             }
         }
-
-//        StringBuilder cabecalho = new StringBuilder();
-//
-//        for (int i = 0; i < 7; i++) {
-//            cabecalho.append(scanner.nextLine());
-//        }
-//
-//        if (!ContaCorrenteFactory.extrairNome(cabecalho).equals(ContaCorrenteFactory.extrairNome(cliente))) {
-//            clientes.add(cliente);
-//
-//            cliente = new StringBuilder();
-//        }
 
         scanner.close();
 

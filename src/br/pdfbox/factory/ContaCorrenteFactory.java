@@ -50,10 +50,6 @@ public class ContaCorrenteFactory {
         return contasCorrentes;
     }
 
-    private static boolean existeClienteNaLista(List<ContaCorrente> contasCorrentes, String nome) {
-        return contasCorrentes.stream().anyMatch(contaCorrente -> contaCorrente.getCliente().getNome().equals(nome));
-    }
-
     private static ContaCorrente construirContaCorrente(
                                                         String nome,
                                                         String logradouro,
