@@ -5,6 +5,7 @@ import br.pdfbox.dominio.ContaCorrente;
 import br.pdfbox.dominio.Endereco;
 import br.pdfbox.dominio.Movimentacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -68,9 +69,9 @@ public class ContaCorrenteFactory {
         return ContaCorrente.criar(
                                    construirCliente(nome, construirEndereco(logradouro, cep, cidade, estado)),
                                    numeroConta,
-                                   Double.parseDouble(saldoTotal),
-                                   Double.parseDouble(saldoDisponivel),
-                                   Double.parseDouble(saldoAnterior),
+                                   new BigDecimal(saldoTotal),
+                                   new BigDecimal(saldoDisponivel),
+                                   new BigDecimal(saldoAnterior),
                                    construirListaMovimentacoes(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao)
         );
     }
@@ -94,7 +95,7 @@ public class ContaCorrenteFactory {
         int mes = Integer.parseInt(mesTexto);
         int ano = Integer.parseInt(anoTexto);
 
-        return Movimentacao.criar(LocalDate.of(ano, mes, dia), descricao, Double.parseDouble(valorMovimentado), Double.parseDouble(saldoEmContaAposMovimentacao));
+        return Movimentacao.criar(LocalDate.of(ano, mes, dia), descricao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
     }
 
     private static Cliente construirCliente(String nome, Endereco endereco) {
@@ -130,7 +131,22 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairSaldoDisponivel(StringBuilder cliente) {
-        return "10.0";
+        int indiceInicioFraseSaldo = cliente.indexOf("Disponível");
+        int indiceInicioSaldo = indiceInicioFraseSaldo + 14;
+
+        int indiceFinalCliente = cliente.length();
+        int indiceFinalSaldo = indiceFinalCliente - 10;
+
+        String saldoComTexto = cliente.substring(indiceInicioSaldo, indiceFinalCliente);
+
+        if (saldoComTexto.equals("0,00")) {
+            return saldoComTexto.replace(",", ".");
+        }
+
+        String saldoString = cliente.substring(indiceInicioSaldo, indiceFinalSaldo);
+        saldoString = saldoString.replace(".", "");
+
+        return saldoString.replace(",", ".");
     }
 
     private static String extrairNumeroConta(StringBuilder cliente) {
@@ -152,7 +168,7 @@ public class ContaCorrenteFactory {
 
         numeroConta = numeroConta.replace(digitos, "");
 
-        return numeroConta + digitos;
+        return numeroConta.concat(digitos);
     }
 
     private static String extrairEstado(StringBuilder cliente) {

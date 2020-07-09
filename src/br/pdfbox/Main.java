@@ -19,7 +19,7 @@ public class Main {
 
         try {
             //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-junho.pdf";
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-cortado-abril.pdf";
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 

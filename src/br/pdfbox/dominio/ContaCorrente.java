@@ -1,5 +1,6 @@
 package br.pdfbox.dominio;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ContaCorrente {
@@ -7,13 +8,13 @@ public class ContaCorrente {
     private Cliente cliente;
 
     private String numeroDaConta;
-    private double saldoTotal;
-    private double saldoDisponivel;
-    private double saldoAnterior;
+    private BigDecimal saldoTotal;
+    private BigDecimal saldoDisponivel;
+    private BigDecimal saldoAnterior;
 
     private List<Movimentacao> movimentacoes;
 
-    private ContaCorrente(Cliente cliente, String numeroDaConta, double saldoTotal, double saldoDisponivel, double saldoAnterior, List<Movimentacao> movimentacoes) {
+    private ContaCorrente(Cliente cliente, String numeroDaConta, BigDecimal saldoTotal, BigDecimal saldoDisponivel, BigDecimal saldoAnterior, List<Movimentacao> movimentacoes) {
         this.numeroDaConta = numeroDaConta;
         this.saldoTotal = saldoTotal;
         this.saldoDisponivel = saldoDisponivel;
@@ -22,7 +23,7 @@ public class ContaCorrente {
         this.movimentacoes = movimentacoes;
     }
 
-    public static ContaCorrente criar(Cliente cliente, String numeroDaConta, double saldoTotal, double saldoDisponivel, double saldoAnterior, List<Movimentacao> movimentacoes) {
+    public static ContaCorrente criar(Cliente cliente, String numeroDaConta, BigDecimal saldoTotal, BigDecimal saldoDisponivel, BigDecimal saldoAnterior, List<Movimentacao> movimentacoes) {
         return new ContaCorrente(cliente, numeroDaConta, saldoTotal, saldoDisponivel, saldoAnterior, movimentacoes);
     }
 
@@ -34,15 +35,15 @@ public class ContaCorrente {
         return numeroDaConta;
     }
 
-    public double getSaldoTotal() {
+    public BigDecimal getSaldoTotal() {
         return saldoTotal;
     }
 
-    public double getSaldoDisponivel() {
+    public BigDecimal getSaldoDisponivel() {
         return saldoDisponivel;
     }
 
-    public double getSaldoAnterior() {
+    public BigDecimal getSaldoAnterior() {
         return saldoAnterior;
     }
 

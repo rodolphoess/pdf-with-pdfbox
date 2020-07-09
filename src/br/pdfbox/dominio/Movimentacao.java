@@ -1,22 +1,23 @@
 package br.pdfbox.dominio;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Movimentacao {
 
     private LocalDate dataMovimentacao;
     private String descricao;
-    private double valorMovimentado;
-    private double saldoEmContaAposMovimentacao;
+    private BigDecimal valorMovimentado;
+    private BigDecimal saldoEmContaAposMovimentacao;
 
-    private Movimentacao(LocalDate dataMovimentacao, String descricao, double valorMovimentado, double saldoEmContaAposMovimentacao) {
+    private Movimentacao(LocalDate dataMovimentacao, String descricao, BigDecimal valorMovimentado, BigDecimal saldoEmContaAposMovimentacao) {
         this.dataMovimentacao = dataMovimentacao;
         this.descricao = descricao;
         this.valorMovimentado = valorMovimentado;
         this.saldoEmContaAposMovimentacao = saldoEmContaAposMovimentacao;
     }
 
-    public static Movimentacao criar(LocalDate dataMovimentacao, String descricao, double valorMovimentado, double saldoEmContaAposMovimentacao) {
+    public static Movimentacao criar(LocalDate dataMovimentacao, String descricao, BigDecimal valorMovimentado, BigDecimal saldoEmContaAposMovimentacao) {
         return new Movimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
     }
 
@@ -28,11 +29,11 @@ public class Movimentacao {
         return descricao;
     }
 
-    public double getValorMovimentado() {
+    public BigDecimal getValorMovimentado() {
         return valorMovimentado;
     }
 
-    public double getSaldoEmContaAposMovimentacao() {
+    public BigDecimal getSaldoEmContaAposMovimentacao() {
         return saldoEmContaAposMovimentacao;
     }
 }
