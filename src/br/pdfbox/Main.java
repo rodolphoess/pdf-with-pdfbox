@@ -54,7 +54,7 @@ public class Main {
 
             long tempoExecucao = tempoFinal - tempoInicial;
 
-            System.out.println("--------------------------------\n\n" + "Tempo de execução: " + tempoExecucao + "ms");
+            System.out.println("\n--------------------------------\n\n" + "Tempo de execução: " + tempoExecucao + "ms");
 
         } catch (IOException e) {
             System.out.print(e);
