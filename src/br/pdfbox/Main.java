@@ -2,6 +2,7 @@ package br.pdfbox;
 
 import br.pdfbox.dominio.ContaCorrente;
 import br.pdfbox.factory.ContaCorrenteFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
@@ -21,7 +22,7 @@ public class Main {
             String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf";
 
             /** Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java **/
-            long tempoInicial = System.currentTimeMillis();
+            long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
             File file = new File(path);
 
             PDDocument document = PDDocument.load(file);
@@ -31,7 +32,6 @@ public class Main {
             pdfTextStripper.setLineSeparator(" || ");
 
             String conteudo = pdfTextStripper.getText(document);
-            long tempoFinal = System.currentTimeMillis();
             /** Final do serviço geral de leitura de PDF. **/
 
             /** Serviço para leitura de extrato de contas correntes. LeituraExtratoContasCorrentesPDF.java **/
@@ -39,13 +39,17 @@ public class Main {
 
             List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
 
-            //TODO: Após retornar uma lista de ContaCorrente, fazer chamada aqui para transformar a lista em JSON.
+            ObjectMapper mapper = new ObjectMapper();
+            String resultado = mapper.writeValueAsString(contasCorrentes);
             /** Final serviço para leitura extrato de contas correntes. **/
+
+            long tempoFinal = System.currentTimeMillis(); //TODO: Retirar
 
             /** Desnecessário até o catch **/
             for (StringBuilder cliente : clientes) {
                 System.out.println(cliente);
             }
+            System.out.println(resultado);
 
             long tempoExecucao = tempoFinal - tempoInicial;
 
@@ -74,6 +78,18 @@ public class Main {
                 cliente = new StringBuilder();
             }
         }
+
+//        StringBuilder cabecalho = new StringBuilder();
+//
+//        for (int i = 0; i < 7; i++) {
+//            cabecalho.append(scanner.nextLine());
+//        }
+//
+//        if (!ContaCorrenteFactory.extrairNome(cabecalho).equals(ContaCorrenteFactory.extrairNome(cliente))) {
+//            clientes.add(cliente);
+//
+//            cliente = new StringBuilder();
+//        }
 
         scanner.close();
 

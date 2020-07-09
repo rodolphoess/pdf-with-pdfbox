@@ -12,6 +12,9 @@ import static com.google.common.collect.Lists.newArrayList;
 
 public class ContaCorrenteFactory {
 
+    public static final int RETIRA_PIPES_E_ESPACOS = 4;
+    public static final int RETIRA_PIPES = 2;
+
     private ContaCorrenteFactory() { }
 
     public static List<ContaCorrente> popularContasCorrentes(List<StringBuilder> clientes) {
@@ -22,9 +25,11 @@ public class ContaCorrenteFactory {
 
             String nome = extrairNome(cliente);
 
+//            if (!existeClienteNaLista(contasCorrentes, nome)) {
+//
+//            }
+
             String logradouro = extrairLogradouro(cliente);
-            String complemento = extrairComplemento(cliente);
-            String numero = extrairNumero(cliente);
             String cep = extrairCep(cliente);
             String cidade = extrairCidade(cliente);
             String estado = extrairEstado(cliente);
@@ -39,7 +44,7 @@ public class ContaCorrenteFactory {
             String valorMovimentado = extrairValorMovimentado(cliente);
             String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(cliente);
 
-            ContaCorrente contaCorrente = construirContaCorrente(nome, logradouro, complemento, numero, cep, cidade, estado,
+            ContaCorrente contaCorrente = construirContaCorrente(nome, logradouro, cep, cidade, estado,
                     numeroConta, saldoTotal, saldoDisponivel, saldoAnterior, dataMovimentacao, descricao, valorMovimentado,
                     saldoEmContaAposMovimentacao);
 
@@ -49,11 +54,13 @@ public class ContaCorrenteFactory {
         return contasCorrentes;
     }
 
+    private static boolean existeClienteNaLista(List<ContaCorrente> contasCorrentes, String nome) {
+        return contasCorrentes.stream().anyMatch(contaCorrente -> contaCorrente.getCliente().getNome().equals(nome));
+    }
+
     private static ContaCorrente construirContaCorrente(
                                                         String nome,
                                                         String logradouro,
-                                                        String complemento,
-                                                        String numero,
                                                         String cep,
                                                         String cidade,
                                                         String estado,
@@ -67,16 +74,16 @@ public class ContaCorrenteFactory {
                                                         String saldoEmContaAposMovimentacao) {
 
         return ContaCorrente.criar(
-                                   construirCliente(nome, construirEndereco(logradouro, complemento, numero, cep, cidade, estado)),
+                                   construirCliente(nome, construirEndereco(logradouro, cep, cidade, estado)),
                                    numeroConta,
                                    Double.parseDouble(saldoTotal),
                                    Double.parseDouble(saldoDisponivel),
                                    Double.parseDouble(saldoAnterior),
-                                   construirMovimentacoes(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao)
+                                   construirListaMovimentacoes(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao)
         );
     }
 
-    private static List<Movimentacao> construirMovimentacoes(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
+    private static List<Movimentacao> construirListaMovimentacoes(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
         List<Movimentacao> movimentacoes = newArrayList();
 
         Movimentacao movimentacao = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
@@ -102,8 +109,8 @@ public class ContaCorrenteFactory {
         return Cliente.criar(nome, endereco);
     }
 
-    private static Endereco construirEndereco(String logradouro, String complemento, String numero, String cep, String cidade, String estado) {
-        return Endereco.criar(logradouro, complemento, numero, cep, cidade, estado);
+    private static Endereco construirEndereco(String logradouro, String cep, String cidade, String estado) {
+        return Endereco.criar(logradouro, cep, cidade, estado);
     }
 
     private static String extrairSaldoEmContaAposMovimentacao(StringBuilder cliente) {
@@ -135,44 +142,97 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairNumeroConta(StringBuilder cliente) {
-        return "";
+        final int RETIRA_TEXTO_LINHA = 33;
+
+        int indiceInicioConta = 0;
+        for (int linha = 0; linha < 10; linha++) {
+            indiceInicioConta = cliente.indexOf(" || ", indiceInicioConta + RETIRA_PIPES);
+        }
+
+        int indiceFinalLinhaConta = 0;
+        for (int linha = 0; linha < 11; linha++) {
+            indiceFinalLinhaConta = cliente.indexOf(" || ", indiceFinalLinhaConta + RETIRA_PIPES);
+        }
+
+        String numeroConta = cliente.substring(indiceInicioConta + RETIRA_PIPES_E_ESPACOS, indiceFinalLinhaConta - RETIRA_TEXTO_LINHA);
+
+        String digitos = numeroConta.substring(0, 2);
+
+        numeroConta = numeroConta.replace(digitos, "");
+
+        return numeroConta + digitos;
     }
 
     private static String extrairEstado(StringBuilder cliente) {
-        return "";
+        int indiceFinalEstado = 0;
+        for (int linha = 0; linha < 8; linha++) {
+            indiceFinalEstado = cliente.indexOf(" || ", indiceFinalEstado + 1);
+        }
+
+        return cliente.substring(indiceFinalEstado - 2, indiceFinalEstado);
     }
 
     private static String extrairCidade(StringBuilder cliente) {
-        return "";
+        final int RETIRA_ESTADO = 5;
+        final int RETIRA_TRACO = 3;
+
+        int indiceInicioLinhaCidade = 0;
+        for (int linha = 0; linha < 7; linha++) {
+            indiceInicioLinhaCidade = cliente.indexOf(" || ", indiceInicioLinhaCidade + 1);
+        }
+
+        int indiceFinalCidade = 0;
+        for (int linha = 0; linha < 8; linha++) {
+            indiceFinalCidade = cliente.indexOf(" || ", indiceFinalCidade + 1);
+        }
+
+        String linhaCidade = cliente.substring(indiceInicioLinhaCidade + RETIRA_PIPES_E_ESPACOS, indiceFinalCidade);
+
+        int indiceInicioCidade = 0;
+        for (int traco = 0; traco < 1; traco++) {
+            indiceInicioCidade = linhaCidade.indexOf(" - ", indiceInicioCidade + RETIRA_PIPES);
+        }
+
+        return linhaCidade.substring(indiceInicioCidade + RETIRA_TRACO, linhaCidade.length() - RETIRA_ESTADO);
     }
 
     private static String extrairCep(StringBuilder cliente) {
-        return "";
-    }
+        final int TAMANHO_CEP_PDF = 15;
 
-    private static String extrairNumero(StringBuilder cliente) {
-        return "";
-    }
+        int indiceInicioCep = 0;
+        for (int linha = 0; linha < 7; linha++) {
+            indiceInicioCep = cliente.indexOf(" || ", indiceInicioCep + RETIRA_PIPES);
+        }
 
-    private static String extrairComplemento(StringBuilder cliente) {
-        return "";
+        int indiceFimCep = indiceInicioCep + TAMANHO_CEP_PDF;
+
+        String cep = cliente.substring(indiceInicioCep + RETIRA_PIPES_E_ESPACOS, indiceFimCep);
+
+        return cep.replace(" ", "");
     }
 
     private static String extrairLogradouro(StringBuilder cliente) {
-        return "";
-    }
-
-    private static String extrairNome(StringBuilder cliente) {
-
-        int indiceInicioNome = 0;
-
-        for (int linha = 0; linha < 5; linha++) {
-            indiceInicioNome = cliente.indexOf(" || ", indiceInicioNome + 2);
+        int indiceInicioLogradouro = 0;
+        for (int linha = 0; linha < 6; linha++) {
+            indiceInicioLogradouro = cliente.indexOf(" || ", indiceInicioLogradouro + RETIRA_PIPES);
         }
 
-        int indiceTextoCliente = cliente.indexOf("Cliente");
+        int indiceFimLogradouro = cliente.indexOf(" || ", indiceInicioLogradouro + RETIRA_PIPES);
 
-        return cliente.substring(indiceInicioNome + 4, indiceTextoCliente);
+        String logradouro = cliente.substring(indiceInicioLogradouro + RETIRA_PIPES_E_ESPACOS, indiceFimLogradouro);
+
+        return logradouro.replace("  ", "");
+    }
+
+    public static String extrairNome(StringBuilder cliente) {
+        int indiceInicioNome = 0;
+        for (int linha = 0; linha < 5; linha++) {
+            indiceInicioNome = cliente.indexOf(" || ", indiceInicioNome + RETIRA_PIPES);
+        }
+
+        int indiceFimNome = cliente.indexOf("Cliente");
+
+        return cliente.substring(indiceInicioNome + RETIRA_PIPES_E_ESPACOS, indiceFimNome);
     }
 
 }

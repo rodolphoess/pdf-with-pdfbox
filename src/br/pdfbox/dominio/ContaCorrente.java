@@ -26,4 +26,27 @@ public class ContaCorrente {
         return new ContaCorrente(cliente, numeroDaConta, saldoTotal, saldoDisponivel, saldoAnterior, movimentacoes);
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public String getNumeroDaConta() {
+        return numeroDaConta;
+    }
+
+    public double getSaldoTotal() {
+        return saldoTotal;
+    }
+
+    public double getSaldoDisponivel() {
+        return saldoDisponivel;
+    }
+
+    public double getSaldoAnterior() {
+        return saldoAnterior;
+    }
+
+    public List<Movimentacao> getMovimentacoes() {
+        return movimentacoes;
+    }
 }

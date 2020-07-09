@@ -14,4 +14,11 @@ public class Cliente {
         return new Cliente(nome, endereco);
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
 }
