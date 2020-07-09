@@ -19,7 +19,7 @@ public class Main {
 
         try {
             //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-abril.pdf";
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-junho.pdf";
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
@@ -68,23 +68,35 @@ public class Main {
         Scanner scanner = new Scanner(conteudo);
         StringBuilder cliente = new StringBuilder();
         StringBuilder proximoCliente = new StringBuilder();
+        boolean clientesIguais = false;
 
         while (scanner.hasNextLine()) {
 
             String linha = scanner.nextLine();
             cliente.append(linha);
 
-            if (linha.equals("") && scanner.hasNextLine()) {
-
+            if (scanner.hasNextLine()) {
                 linha = scanner.nextLine();
+
+                while (scanner.hasNextLine() && linha.equals("")) {
+                    linha = scanner.nextLine();
+                }
+
                 proximoCliente.append(linha);
 
-                if (!ContaCorrenteFactory.extrairNome(cliente).equals(ContaCorrenteFactory.extrairNome(proximoCliente))) {
-                    clientes.add(cliente);
+                clientesIguais = ContaCorrenteFactory.extrairNome(cliente).equals(ContaCorrenteFactory.extrairNome(proximoCliente));
+            }
 
-                    cliente = proximoCliente;
-                    proximoCliente = new StringBuilder();
-                }
+            if (!clientesIguais) {
+                clientes.add(cliente);
+
+                cliente = proximoCliente;
+                proximoCliente = new StringBuilder();
+            } else {
+                cliente.append(proximoCliente);
+                proximoCliente = new StringBuilder();
+
+                clientesIguais = false;
             }
         }
 
