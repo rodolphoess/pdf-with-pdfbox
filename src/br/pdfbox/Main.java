@@ -19,10 +19,11 @@ public class Main {
 
         try {
             //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo.pdf";
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-abril.pdf";
+
+            long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
             /** Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java **/
-            long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
             File file = new File(path);
 
             PDDocument document = PDDocument.load(file);
@@ -40,7 +41,7 @@ public class Main {
             List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
 
             ObjectMapper mapper = new ObjectMapper();
-            String resultado = mapper.writeValueAsString(contasCorrentes);
+            String json = mapper.writeValueAsString(contasCorrentes);
             /** Final serviço para leitura extrato de contas correntes. **/
 
             long tempoFinal = System.currentTimeMillis(); //TODO: Retirar
@@ -49,7 +50,7 @@ public class Main {
             for (StringBuilder cliente : clientes) {
                 System.out.println(cliente);
             }
-            System.out.println(resultado);
+            System.out.println("\n" + json);
 
             long tempoExecucao = tempoFinal - tempoInicial;
 

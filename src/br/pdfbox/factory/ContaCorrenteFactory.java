@@ -25,10 +25,6 @@ public class ContaCorrenteFactory {
 
             String nome = extrairNome(cliente);
 
-//            if (!existeClienteNaLista(contasCorrentes, nome)) {
-//
-//            }
-
             String logradouro = extrairLogradouro(cliente);
             String cep = extrairCep(cliente);
             String cidade = extrairCidade(cliente);
