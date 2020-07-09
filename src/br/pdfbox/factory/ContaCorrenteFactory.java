@@ -123,11 +123,38 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairSaldoAnterior(StringBuilder cliente) {
-        return "10.0";
+        int indiceInicioSaldoAnterior = 0;
+        for (int linha = 0; linha < 11; linha++) {
+            indiceInicioSaldoAnterior = cliente.indexOf(" || ", indiceInicioSaldoAnterior + RETIRA_PIPES);
+        }
+
+        int indiceFinalSaldoAnterior = 0;
+        for (int linha = 0; linha < 12; linha++) {
+            indiceFinalSaldoAnterior = cliente.indexOf(" || ", indiceFinalSaldoAnterior + RETIRA_PIPES);
+        }
+
+        String saldo = cliente.substring(indiceInicioSaldoAnterior + RETIRA_PIPES_E_ESPACOS, indiceFinalSaldoAnterior);
+
+        return aplicarFormatacaoBigDecimal(saldo);
     }
 
     private static String extrairSaldoTotal(StringBuilder cliente) {
-        return "10.0";
+        int indiceInicioFraseSaldo = cliente.indexOf("Total Cliente");
+        int indiceInicioSaldo = indiceInicioFraseSaldo + 14;
+
+        int indiceFinalFrase = cliente.indexOf("Disponível");
+
+        String saldo = cliente.substring(indiceInicioSaldo, indiceFinalFrase);
+
+        if (saldo.equals("0,00")) {
+            return saldo.replace(",", ".");
+        }
+
+        int indiceFinalSaldo = indiceFinalFrase - 10;
+
+        saldo = cliente.substring(indiceInicioSaldo, indiceFinalSaldo);
+
+        return aplicarFormatacaoBigDecimal(saldo);
     }
 
     private static String extrairSaldoDisponivel(StringBuilder cliente) {
@@ -144,9 +171,8 @@ public class ContaCorrenteFactory {
         }
 
         String saldoString = cliente.substring(indiceInicioSaldo, indiceFinalSaldo);
-        saldoString = saldoString.replace(".", "");
 
-        return saldoString.replace(",", ".");
+        return aplicarFormatacaoBigDecimal(saldoString);
     }
 
     private static String extrairNumeroConta(StringBuilder cliente) {
@@ -241,6 +267,12 @@ public class ContaCorrenteFactory {
         int indiceFimNome = cliente.indexOf("Cliente");
 
         return cliente.substring(indiceInicioNome + RETIRA_PIPES_E_ESPACOS, indiceFimNome);
+    }
+
+    private static String aplicarFormatacaoBigDecimal(String valor) {
+        valor = valor.replace(".", "");
+
+        return valor.replace(",", ".");
     }
 
 }
