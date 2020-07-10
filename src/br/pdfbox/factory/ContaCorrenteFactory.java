@@ -70,28 +70,40 @@ public class ContaCorrenteFactory {
     }
 
     private static List<Movimentacao> extrairMovimentacoes(StringBuilder cliente) {
-        //TODO: Recuperar cada movimentação através de while, passar a movimentação para os métodos de extração, adicionar na lista cada movimentação, ao final retornar a lista.
-
-        List<Movimentacao> movimentacoesSeparadas = newArrayList();
-        String movimentacoesJuntas = "";
+        List<String> movimentacoesStringSeparadas = newArrayList();
+        List<Movimentacao> movimentacoesPopuladas = newArrayList();
 
         int inicioMovimentacoes = cliente.indexOf(" Saldo ||");
         int finalMovimentacoes = cliente.indexOf(" Total Cliente");
 
-        movimentacoesJuntas = cliente.substring(inicioMovimentacoes, finalMovimentacoes);
+        String todasMovimentacoes = cliente.substring(inicioMovimentacoes, finalMovimentacoes);
+        int indiceTextoInicialMovimentacoes = todasMovimentacoes.indexOf("||");
 
-//        while (!movimentacoesJuntas.equals("")) {
-//            String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacoesJuntas));
-//            String descricao = extrairDescricaoMovimentacao(new StringBuilder(movimentacoesJuntas));
-//            String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacoesJuntas));
-//            String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacoesJuntas));
-//
-//            Movimentacao movimentacao1 = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
-//
-//            movimentacoesSeparadas.add(movimentacao1);
-//        }
+        todasMovimentacoes = todasMovimentacoes.substring(indiceTextoInicialMovimentacoes + 3);
 
-        return movimentacoesSeparadas;
+        while (!todasMovimentacoes.isEmpty()) {
+            int indiceFinalMovimentacao = todasMovimentacoes.indexOf(" ||");
+
+            String movimentacao = todasMovimentacoes.substring(0, indiceFinalMovimentacao);
+
+            todasMovimentacoes = todasMovimentacoes.replace(movimentacao.concat( " ||"), "");
+
+            movimentacoesStringSeparadas.add(movimentacao);
+        }
+
+        for (String movimentacao : movimentacoesStringSeparadas) {
+
+            String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacao));
+            String descricao = extrairDescricaoMovimentacao(new StringBuilder(movimentacao));
+            String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacao));
+            String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacao));
+
+            Movimentacao movimentacaoPojo = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
+
+            movimentacoesPopuladas.add(movimentacaoPojo);
+        }
+
+        return movimentacoesPopuladas;
     }
 
     private static Movimentacao construirMovimentacao(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
