@@ -98,9 +98,11 @@ public class ContaCorrenteFactory {
             String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacao));
             String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacao));
 
-            Movimentacao movimentacaoPojo = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
+            if (!dataMovimentacao.equals("") && !descricao.equals("") && !valorMovimentado.equals("") && !saldoEmContaAposMovimentacao.equals("")) {
+                Movimentacao movimentacaoPojo = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
 
-            movimentacoesPopuladas.add(movimentacaoPojo);
+                movimentacoesPopuladas.add(movimentacaoPojo);
+            }
         }
 
         return movimentacoesPopuladas;
@@ -135,10 +137,16 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairDescricaoMovimentacao(StringBuilder movimentacao) {
-        return "";
+        return "Asd";
     }
 
     private static String extrairDataMovimentacao(StringBuilder movimentacao) {
+        if (movimentacao.length() < 10) {
+            return "";
+        }
+
+
+
         return "10/12/2020";
     }
 

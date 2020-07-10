@@ -35,7 +35,7 @@ public class Main {
             String conteudo = pdfTextStripper.getText(document);
             /** Final do serviço geral de leitura de PDF. **/
 
-            /** Serviço para leitura de extrato de contas correntes. LeituraExtratoContasCorrentesPDF.java **/
+            /** Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesPDF.java **/
             List<StringBuilder> clientes = quebrarStringPorCliente(conteudo);
 
             List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
