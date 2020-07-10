@@ -126,7 +126,17 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairValorMovimentado(StringBuilder movimentacao) {
-        return "10.0";
+        int indiceSaldoEmConta = movimentacao.indexOf(",");
+        int indiceValorMovimentado = movimentacao.indexOf(",", indiceSaldoEmConta + 1);
+
+        String valorMovimentado = movimentacao.substring(indiceSaldoEmConta + 3, indiceValorMovimentado + 3);
+
+        int valorMovimentadoComData = valorMovimentado.indexOf("|");
+        if (valorMovimentadoComData != -1) {
+            valorMovimentado = valorMovimentado.substring(valorMovimentadoComData + 2);
+        }
+
+        return aplicarFormatacaoBigDecimal(valorMovimentado);
     }
 
     private static String extrairDescricaoMovimentacao(StringBuilder movimentacao) {
