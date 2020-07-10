@@ -70,6 +70,18 @@ public class ContaCorrenteFactory {
         );
     }
 
+    private static Movimentacao construirMovimentacao(String dataMovimentacao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
+        return Movimentacao.criar(dataMovimentacao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
+    }
+
+    private static Cliente construirCliente(String nome, Endereco endereco) {
+        return Cliente.criar(nome, endereco);
+    }
+
+    private static Endereco construirEndereco(String logradouro, String cep, String cidade, String estado) {
+        return Endereco.criar(logradouro, cep, cidade, estado);
+    }
+
     private static List<Movimentacao> extrairMovimentacoes(StringBuilder cliente) {
         List<String> movimentacoesStringSeparadas = newArrayList();
         List<Movimentacao> movimentacoesPopuladas = newArrayList();
@@ -109,18 +121,6 @@ public class ContaCorrenteFactory {
         }
 
         return movimentacoesPopuladas;
-    }
-
-    private static Movimentacao construirMovimentacao(String dataMovimentacao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
-        return Movimentacao.criar(dataMovimentacao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
-    }
-
-    private static Cliente construirCliente(String nome, Endereco endereco) {
-        return Cliente.criar(nome, endereco);
-    }
-
-    private static Endereco construirEndereco(String logradouro, String cep, String cidade, String estado) {
-        return Endereco.criar(logradouro, cep, cidade, estado);
     }
 
     private static String extrairSaldoEmContaAposMovimentacao(StringBuilder movimentacao) {
