@@ -82,14 +82,17 @@ public class ContaCorrenteFactory {
 
         todasMovimentacoes = todasMovimentacoes.substring(indiceTextoInicialMovimentacoes + 3);
 
-        while (!todasMovimentacoes.isEmpty()) {
-            int indiceFinalMovimentacao = todasMovimentacoes.indexOf(" ||");
+        int indiceFinalMovimentacao = 1;
+        while (!todasMovimentacoes.isEmpty() && indiceFinalMovimentacao > 0) {
+            indiceFinalMovimentacao = todasMovimentacoes.indexOf(" ||");
 
-            String movimentacao = todasMovimentacoes.substring(0, indiceFinalMovimentacao);
+            if (indiceFinalMovimentacao > 0) {
+                String movimentacao = todasMovimentacoes.substring(0, indiceFinalMovimentacao);
 
-            todasMovimentacoes = todasMovimentacoes.replace(movimentacao.concat( " ||"), "");
+                todasMovimentacoes = todasMovimentacoes.replace(movimentacao.concat(" ||"), "");
 
-            movimentacoesStringSeparadas.add(movimentacao);
+                movimentacoesStringSeparadas.add(movimentacao);
+            }
         }
 
         for (String movimentacao : movimentacoesStringSeparadas) {
