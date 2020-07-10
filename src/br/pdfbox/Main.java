@@ -19,7 +19,7 @@ public class Main {
 
         try {
             //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-abril.pdf";
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-cortado-abril.pdf";
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
@@ -47,9 +47,9 @@ public class Main {
             long tempoFinal = System.currentTimeMillis(); //TODO: Retirar
 
             /** Desnecessário até o catch **/
-//            for (StringBuilder cliente : clientes) {
-//                System.out.println(cliente);
-//            }
+            for (StringBuilder cliente : clientes) {
+                System.out.println(cliente);
+            }
 
             System.out.println("\n" + json);
 

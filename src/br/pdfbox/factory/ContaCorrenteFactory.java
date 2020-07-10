@@ -36,14 +36,10 @@ public class ContaCorrenteFactory {
             String saldoDisponivel = extrairSaldoDisponivel(cliente);
             String saldoAnterior = extrairSaldoAnterior(cliente);
 
-            String dataMovimentacao = extrairDataMovimentacao(cliente);
-            String descricao = extrairDescricaoMovimentacao(cliente);
-            String valorMovimentado = extrairValorMovimentado(cliente);
-            String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(cliente);
+            List<Movimentacao> movimentacoesCliente = extrairMovimentacoes(cliente);
 
             ContaCorrente contaCorrente = construirContaCorrente(nome, logradouro, cep, cidade, estado,
-                    numeroConta, saldoTotal, saldoDisponivel, saldoAnterior, dataMovimentacao, descricao, valorMovimentado,
-                    saldoEmContaAposMovimentacao);
+                    numeroConta, saldoTotal, saldoDisponivel, saldoAnterior, movimentacoesCliente);
 
             contasCorrentes.add(contaCorrente);
         }
@@ -61,10 +57,7 @@ public class ContaCorrenteFactory {
                                                         String saldoTotal,
                                                         String saldoDisponivel,
                                                         String saldoAnterior,
-                                                        String dataMovimentacao,
-                                                        String descricao,
-                                                        String valorMovimentado,
-                                                        String saldoEmContaAposMovimentacao) {
+                                                        List<Movimentacao> movimentacoes) {
 
         return ContaCorrente.criar(
                                    construirCliente(nome, construirEndereco(logradouro, cep, cidade, estado)),
@@ -72,18 +65,33 @@ public class ContaCorrenteFactory {
                                    new BigDecimal(saldoTotal),
                                    new BigDecimal(saldoDisponivel),
                                    new BigDecimal(saldoAnterior),
-                                   construirListaMovimentacoes(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao)
+                                   movimentacoes
         );
     }
 
-    private static List<Movimentacao> construirListaMovimentacoes(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
-        List<Movimentacao> movimentacoes = newArrayList();
+    private static List<Movimentacao> extrairMovimentacoes(StringBuilder cliente) {
+        //TODO: Recuperar cada movimentação através de while, passar a movimentação para os métodos de extração, adicionar na lista cada movimentação, ao final retornar a lista.
 
-        Movimentacao movimentacao = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
+        List<Movimentacao> movimentacoesSeparadas = newArrayList();
+        String movimentacoesJuntas = "";
 
-        movimentacoes.add(movimentacao);
+        int inicioMovimentacoes = cliente.indexOf(" Saldo ||");
+        int finalMovimentacoes = cliente.indexOf(" Total Cliente");
 
-        return movimentacoes;
+        movimentacoesJuntas = cliente.substring(inicioMovimentacoes, finalMovimentacoes);
+
+//        while (!movimentacoesJuntas.equals("")) {
+//            String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacoesJuntas));
+//            String descricao = extrairDescricaoMovimentacao(new StringBuilder(movimentacoesJuntas));
+//            String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacoesJuntas));
+//            String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacoesJuntas));
+//
+//            Movimentacao movimentacao1 = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
+//
+//            movimentacoesSeparadas.add(movimentacao1);
+//        }
+
+        return movimentacoesSeparadas;
     }
 
     private static Movimentacao construirMovimentacao(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
@@ -106,19 +114,19 @@ public class ContaCorrenteFactory {
         return Endereco.criar(logradouro, cep, cidade, estado);
     }
 
-    private static String extrairSaldoEmContaAposMovimentacao(StringBuilder cliente) {
+    private static String extrairSaldoEmContaAposMovimentacao(StringBuilder movimentacao) {
         return "10.0";
     }
 
-    private static String extrairValorMovimentado(StringBuilder cliente) {
+    private static String extrairValorMovimentado(StringBuilder movimentacao) {
         return "10.0";
     }
 
-    private static String extrairDescricaoMovimentacao(StringBuilder cliente) {
+    private static String extrairDescricaoMovimentacao(StringBuilder movimentacao) {
         return "";
     }
 
-    private static String extrairDataMovimentacao(StringBuilder cliente) {
+    private static String extrairDataMovimentacao(StringBuilder movimentacao) {
         return "10/12/2020";
     }
 
