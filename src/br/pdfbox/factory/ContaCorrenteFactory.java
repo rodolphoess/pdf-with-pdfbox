@@ -7,6 +7,7 @@ import br.pdfbox.dominio.Movimentacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -109,15 +110,7 @@ public class ContaCorrenteFactory {
     }
 
     private static Movimentacao construirMovimentacao(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
-        String diaTexto = dataMovimentacao.substring(0, 2);
-        String mesTexto = dataMovimentacao.substring(3, 5);
-        String anoTexto = dataMovimentacao.substring(6);
-
-        int dia = Integer.parseInt(diaTexto);
-        int mes = Integer.parseInt(mesTexto);
-        int ano = Integer.parseInt(anoTexto);
-
-        return Movimentacao.criar(LocalDate.of(ano, mes, dia), descricao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
+        return Movimentacao.criar(dataMovimentacao, descricao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
     }
 
     private static Cliente construirCliente(String nome, Endereco endereco) {
@@ -145,9 +138,23 @@ public class ContaCorrenteFactory {
             return "";
         }
 
+        String data = movimentacao.substring(0, 6);
+        data = data.trim();
 
+        LocalDate dataLocalDate;
+        try {
+            String diaTexto = data.substring(0, 2);
+            String mesTexto = data.substring(3, 5);
 
-        return "10/12/2020";
+            int dia = Integer.parseInt(diaTexto);
+            int mes = Integer.parseInt(mesTexto);
+
+            dataLocalDate = LocalDate.of(Year.now().getValue(), mes, dia);
+        } catch (Exception e) {
+            return "";
+        }
+
+        return dataLocalDate.toString();
     }
 
     private static String extrairSaldoAnterior(StringBuilder cliente) {
