@@ -7,7 +7,6 @@ import br.pdfbox.dominio.Movimentacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Year;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -17,13 +16,15 @@ public class ContaCorrenteFactory {
     public static final int RETIRA_PIPES_E_ESPACOS = 4;
     public static final int RETIRA_PIPES = 2;
 
-    private ContaCorrenteFactory() { }
+    private int anoExtrato;
 
-    public static List<ContaCorrente> popularContasCorrentes(List<StringBuilder> clientes) {
+    public List<ContaCorrente> popularContasCorrentes(List<StringBuilder> clientes) {
 
         List<ContaCorrente> contasCorrentes = newArrayList();
 
         for (StringBuilder cliente : clientes) {
+
+            this.anoExtrato = extrairAnoExtrato(cliente);
 
             String nome = extrairNome(cliente);
 
@@ -48,7 +49,7 @@ public class ContaCorrenteFactory {
         return contasCorrentes;
     }
 
-    private static ContaCorrente construirContaCorrente(
+    private ContaCorrente construirContaCorrente(
                                                         String nome,
                                                         String logradouro,
                                                         String cep,
@@ -70,19 +71,19 @@ public class ContaCorrenteFactory {
         );
     }
 
-    private static Movimentacao construirMovimentacao(String dataMovimentacao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
+    private Movimentacao construirMovimentacao(String dataMovimentacao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
         return Movimentacao.criar(dataMovimentacao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
     }
 
-    private static Cliente construirCliente(String nome, Endereco endereco) {
+    private Cliente construirCliente(String nome, Endereco endereco) {
         return Cliente.criar(nome, endereco);
     }
 
-    private static Endereco construirEndereco(String logradouro, String cep, String cidade, String estado) {
+    private Endereco construirEndereco(String logradouro, String cep, String cidade, String estado) {
         return Endereco.criar(logradouro, cep, cidade, estado);
     }
 
-    private static List<Movimentacao> extrairMovimentacoes(StringBuilder cliente) {
+    private List<Movimentacao> extrairMovimentacoes(StringBuilder cliente) {
         List<String> movimentacoesStringSeparadas = newArrayList();
         List<Movimentacao> movimentacoesPopuladas = newArrayList();
 
@@ -123,7 +124,7 @@ public class ContaCorrenteFactory {
         return movimentacoesPopuladas;
     }
 
-    private static String extrairSaldoEmContaAposMovimentacao(StringBuilder movimentacao) {
+    private String extrairSaldoEmContaAposMovimentacao(StringBuilder movimentacao) {
         int indiceInicioSaldoEmConta = movimentacao.indexOf("|");
         int indiceVirgulaSaldoEmConta = movimentacao.indexOf(",");
 
@@ -134,7 +135,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(movimentacao.substring(indiceInicioSaldoEmConta + RETIRA_PIPES, indiceVirgulaSaldoEmConta + 3));
     }
 
-    private static String extrairValorMovimentado(StringBuilder movimentacao) {
+    private String extrairValorMovimentado(StringBuilder movimentacao) {
         int indiceSaldoEmConta = movimentacao.indexOf(",");
         int indiceValorMovimentado = movimentacao.indexOf(",", indiceSaldoEmConta + 1);
 
@@ -149,7 +150,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(valorMovimentado);
     }
 
-    private static String extrairDataMovimentacao(StringBuilder movimentacao) {
+    private String extrairDataMovimentacao(StringBuilder movimentacao) {
         if (movimentacao.length() < 10) {
             return "";
         }
@@ -157,6 +158,7 @@ public class ContaCorrenteFactory {
         String data = movimentacao.substring(0, 6);
         data = data.trim();
 
+        LocalDate dataLocalDate;
         try {
             String diaTexto = data.substring(0, 2);
             String mesTexto = data.substring(3, 5);
@@ -164,15 +166,15 @@ public class ContaCorrenteFactory {
             int dia = Integer.parseInt(diaTexto);
             int mes = Integer.parseInt(mesTexto);
 
-            LocalDate.of(Year.now().getValue(), mes, dia);
+            dataLocalDate = LocalDate.of(this.anoExtrato, mes, dia);
         } catch (Exception e) {
             return "";
         }
 
-        return data;
+        return dataLocalDate.toString();
     }
 
-    private static String extrairSaldoAnterior(StringBuilder cliente) {
+    private String extrairSaldoAnterior(StringBuilder cliente) {
         int indiceInicioSaldoAnterior = 0;
         for (int linha = 0; linha < 11; linha++) {
             indiceInicioSaldoAnterior = cliente.indexOf(" || ", indiceInicioSaldoAnterior + RETIRA_PIPES);
@@ -188,7 +190,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(saldo);
     }
 
-    private static String extrairSaldoTotal(StringBuilder cliente) {
+    private String extrairSaldoTotal(StringBuilder cliente) {
         int indiceInicioFraseSaldo = cliente.indexOf("Total Cliente");
         int indiceInicioSaldo = indiceInicioFraseSaldo + 14;
 
@@ -207,7 +209,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(saldo);
     }
 
-    private static String extrairSaldoDisponivel(StringBuilder cliente) {
+    private String extrairSaldoDisponivel(StringBuilder cliente) {
         int indiceInicioFraseSaldo = cliente.indexOf("Disponível");
         int indiceInicioSaldo = indiceInicioFraseSaldo + 14;
 
@@ -225,7 +227,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(saldoString);
     }
 
-    private static String extrairNumeroConta(StringBuilder cliente) {
+    private String extrairNumeroConta(StringBuilder cliente) {
         final int RETIRA_TEXTO_LINHA = 33;
 
         int indiceInicioConta = 0;
@@ -247,7 +249,7 @@ public class ContaCorrenteFactory {
         return numeroConta.concat(digitos);
     }
 
-    private static String extrairEstado(StringBuilder cliente) {
+    private String extrairEstado(StringBuilder cliente) {
         int indiceFinalEstado = 0;
         for (int linha = 0; linha < 8; linha++) {
             indiceFinalEstado = cliente.indexOf(" || ", indiceFinalEstado + 1);
@@ -256,7 +258,7 @@ public class ContaCorrenteFactory {
         return cliente.substring(indiceFinalEstado - 2, indiceFinalEstado);
     }
 
-    private static String extrairCidade(StringBuilder cliente) {
+    private String extrairCidade(StringBuilder cliente) {
         final int RETIRA_ESTADO = 5;
         final int RETIRA_TRACO = 3;
 
@@ -280,7 +282,7 @@ public class ContaCorrenteFactory {
         return linhaCidade.substring(indiceInicioCidade + RETIRA_TRACO, linhaCidade.length() - RETIRA_ESTADO);
     }
 
-    private static String extrairCep(StringBuilder cliente) {
+    private String extrairCep(StringBuilder cliente) {
         final int TAMANHO_CEP_PDF = 15;
 
         int indiceInicioCep = 0;
@@ -295,7 +297,7 @@ public class ContaCorrenteFactory {
         return cep.replace(" ", "");
     }
 
-    private static String extrairLogradouro(StringBuilder cliente) {
+    private String extrairLogradouro(StringBuilder cliente) {
         int indiceInicioLogradouro = 0;
         for (int linha = 0; linha < 6; linha++) {
             indiceInicioLogradouro = cliente.indexOf(" || ", indiceInicioLogradouro + RETIRA_PIPES);
@@ -319,7 +321,15 @@ public class ContaCorrenteFactory {
         return cliente.substring(indiceInicioNome + RETIRA_PIPES_E_ESPACOS, indiceFimNome);
     }
 
-    private static String aplicarFormatacaoBigDecimal(String valor) {
+    private int extrairAnoExtrato(StringBuilder cliente) {
+        int indiceFinalAno = cliente.indexOf("|");
+
+        String anoString = cliente.substring(indiceFinalAno - 5, indiceFinalAno - 1);
+
+        return Integer.parseInt(anoString);
+    }
+
+    private String aplicarFormatacaoBigDecimal(String valor) {
         valor = valor.replace(".", "");
 
         return valor.replace(",", ".");

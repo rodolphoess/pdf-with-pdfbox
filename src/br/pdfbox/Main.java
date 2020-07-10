@@ -19,7 +19,7 @@ public class Main {
 
         try {
             //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-cortado-abril.pdf";
+            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-junho.pdf";
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
@@ -35,10 +35,11 @@ public class Main {
             String conteudo = pdfTextStripper.getText(document);
             /** Final do serviço geral de leitura de PDF. **/
 
-            /** Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesPDF.java **/
+            /** Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesGenialPDF.java **/
             List<StringBuilder> clientes = separarStringPorCliente(conteudo);
 
-            List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
+            ContaCorrenteFactory contaCorrenteFactory = new ContaCorrenteFactory();
+            List<ContaCorrente> contasCorrentes = contaCorrenteFactory.popularContasCorrentes(clientes);
 
             ObjectMapper mapper = new ObjectMapper();
             String json = mapper.writeValueAsString(contasCorrentes);
