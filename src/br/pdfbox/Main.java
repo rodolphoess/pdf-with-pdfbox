@@ -36,7 +36,7 @@ public class Main {
             /** Final do serviço geral de leitura de PDF. **/
 
             /** Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesPDF.java **/
-            List<StringBuilder> clientes = quebrarStringPorCliente(conteudo);
+            List<StringBuilder> clientes = separarStringPorCliente(conteudo);
 
             List<ContaCorrente> contasCorrentes = ContaCorrenteFactory.popularContasCorrentes(clientes);
 
@@ -63,7 +63,7 @@ public class Main {
 
     }
 
-    private static List<StringBuilder> quebrarStringPorCliente(String conteudo) {
+    private static List<StringBuilder> separarStringPorCliente(String conteudo) {
 
         List<StringBuilder> clientes = newArrayList();
         Scanner scanner = new Scanner(conteudo);

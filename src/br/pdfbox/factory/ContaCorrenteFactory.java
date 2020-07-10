@@ -95,12 +95,11 @@ public class ContaCorrenteFactory {
         for (String movimentacao : movimentacoesStringSeparadas) {
 
             String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacao));
-            String descricao = extrairDescricaoMovimentacao(new StringBuilder(movimentacao));
             String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacao));
             String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacao));
 
-            if (!dataMovimentacao.equals("") && !descricao.equals("") && !valorMovimentado.equals("") && !saldoEmContaAposMovimentacao.equals("")) {
-                Movimentacao movimentacaoPojo = construirMovimentacao(dataMovimentacao, descricao, valorMovimentado, saldoEmContaAposMovimentacao);
+            if (!dataMovimentacao.equals("") && !valorMovimentado.equals("") && !saldoEmContaAposMovimentacao.equals("")) {
+                Movimentacao movimentacaoPojo = construirMovimentacao(dataMovimentacao, valorMovimentado, saldoEmContaAposMovimentacao);
 
                 movimentacoesPopuladas.add(movimentacaoPojo);
             }
@@ -109,8 +108,8 @@ public class ContaCorrenteFactory {
         return movimentacoesPopuladas;
     }
 
-    private static Movimentacao construirMovimentacao(String dataMovimentacao, String descricao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
-        return Movimentacao.criar(dataMovimentacao, descricao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
+    private static Movimentacao construirMovimentacao(String dataMovimentacao, String valorMovimentado, String saldoEmContaAposMovimentacao) {
+        return Movimentacao.criar(dataMovimentacao, new BigDecimal(valorMovimentado), new BigDecimal(saldoEmContaAposMovimentacao));
     }
 
     private static Cliente construirCliente(String nome, Endereco endereco) {
@@ -122,7 +121,14 @@ public class ContaCorrenteFactory {
     }
 
     private static String extrairSaldoEmContaAposMovimentacao(StringBuilder movimentacao) {
-        return "10.0";
+        int indiceInicioSaldoEmConta = movimentacao.indexOf("|");
+        int indiceVirgulaSaldoEmConta = movimentacao.indexOf(",");
+
+        if (indiceInicioSaldoEmConta == -1 || indiceVirgulaSaldoEmConta == -1) {
+            return "";
+        }
+
+        return aplicarFormatacaoBigDecimal(movimentacao.substring(indiceInicioSaldoEmConta + RETIRA_PIPES, indiceVirgulaSaldoEmConta + 3));
     }
 
     private static String extrairValorMovimentado(StringBuilder movimentacao) {
@@ -132,15 +138,12 @@ public class ContaCorrenteFactory {
         String valorMovimentado = movimentacao.substring(indiceSaldoEmConta + 3, indiceValorMovimentado + 3);
 
         int valorMovimentadoComData = valorMovimentado.indexOf("|");
+
         if (valorMovimentadoComData != -1) {
             valorMovimentado = valorMovimentado.substring(valorMovimentadoComData + 2);
         }
 
         return aplicarFormatacaoBigDecimal(valorMovimentado);
-    }
-
-    private static String extrairDescricaoMovimentacao(StringBuilder movimentacao) {
-        return "Asd";
     }
 
     private static String extrairDataMovimentacao(StringBuilder movimentacao) {
@@ -151,7 +154,6 @@ public class ContaCorrenteFactory {
         String data = movimentacao.substring(0, 6);
         data = data.trim();
 
-        LocalDate dataLocalDate;
         try {
             String diaTexto = data.substring(0, 2);
             String mesTexto = data.substring(3, 5);
@@ -159,12 +161,12 @@ public class ContaCorrenteFactory {
             int dia = Integer.parseInt(diaTexto);
             int mes = Integer.parseInt(mesTexto);
 
-            dataLocalDate = LocalDate.of(Year.now().getValue(), mes, dia);
+            LocalDate.of(Year.now().getValue(), mes, dia);
         } catch (Exception e) {
             return "";
         }
 
-        return dataLocalDate.toString();
+        return data;
     }
 
     private static String extrairSaldoAnterior(StringBuilder cliente) {
