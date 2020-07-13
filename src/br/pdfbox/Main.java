@@ -34,7 +34,7 @@ public class Main {
 
             System.out.println("\n--------------------------------\n\n" + "Tempo de execução: " + tempoExecucao + "ms");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print(e);
         }
 

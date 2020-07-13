@@ -12,7 +12,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 public class InterExtratoContasCorrentesGenialPDF {
 
-    public String extrairInformacoesContasCorrentes(String conteudo) throws JsonProcessingException {
+    public String extrairInformacoesContasCorrentes(String conteudo) {
         String json = "";
         try {
             List<StringBuilder> clientes = separarStringPorCliente(conteudo);
