@@ -1,56 +1,32 @@
 package br.pdfbox;
 
-import br.pdfbox.dominio.ContaCorrente;
-import br.pdfbox.factory.ContaCorrenteFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import br.pdfbox.extratocontacorrentegenial.InterExtratoContasCorrentesGenialPDF;
+import br.pdfbox.pdfimport.InterPDF;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
 
         try {
-            //Parâmetro de entrada para leitura do PDF.
-            String path = "../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-abril.pdf";
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
-            /** Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java **/
-            File file = new File(path);
+            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-maio.pdf");
 
-            PDDocument document = PDDocument.load(file);
+            // Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java
+            InterPDF interPDF = new InterPDF();
+            String conteudoBrutoPdf = interPDF.extractTextPdf(file);
+            // Final do serviço geral de leitura de PDF.
 
-            PDFTextStripper pdfTextStripper = new PDFTextStripper();
-            pdfTextStripper.setWordSeparator(" | ");
-            pdfTextStripper.setLineSeparator(" || ");
-
-            String conteudo = pdfTextStripper.getText(document);
-            /** Final do serviço geral de leitura de PDF. **/
-
-            /** Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesGenialPDF.java **/
-            List<StringBuilder> clientes = separarStringPorCliente(conteudo);
-
-            ContaCorrenteFactory contaCorrenteFactory = new ContaCorrenteFactory();
-            List<ContaCorrente> contasCorrentes = contaCorrenteFactory.popularContasCorrentes(clientes);
-
-            ObjectMapper mapper = new ObjectMapper();
-            String json = mapper.writeValueAsString(contasCorrentes);
-            /** Final serviço para leitura extrato de contas correntes. **/
+            // Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesGenialPDF.java
+            InterExtratoContasCorrentesGenialPDF contasCorrentes = new InterExtratoContasCorrentesGenialPDF();
+            String json = contasCorrentes.extrairInformacoesContasCorrentes(conteudoBrutoPdf);
+            // Final serviço para leitura extrato de contas correntes.
 
             long tempoFinal = System.currentTimeMillis(); //TODO: Retirar
-
-            /** Desnecessário até o catch **/
-//            for (StringBuilder cliente : clientes) {
-//                System.out.println(cliente);
-//            }
 
             System.out.println("\n" + json);
 
@@ -62,49 +38,6 @@ public class Main {
             System.out.print(e);
         }
 
-    }
-
-    private static List<StringBuilder> separarStringPorCliente(String conteudo) {
-
-        List<StringBuilder> clientes = newArrayList();
-        Scanner scanner = new Scanner(conteudo);
-        StringBuilder cliente = new StringBuilder();
-        StringBuilder proximoCliente = new StringBuilder();
-        boolean clientesIguais = false;
-
-        while (scanner.hasNextLine()) {
-
-            String linha = scanner.nextLine();
-            cliente.append(linha);
-
-            if (scanner.hasNextLine()) {
-                linha = scanner.nextLine();
-
-                while (scanner.hasNextLine() && linha.equals("")) {
-                    linha = scanner.nextLine();
-                }
-
-                proximoCliente.append(linha);
-
-                clientesIguais = ContaCorrenteFactory.extrairNome(cliente).equals(ContaCorrenteFactory.extrairNome(proximoCliente));
-            }
-
-            if (!clientesIguais) {
-                clientes.add(cliente);
-
-                cliente = proximoCliente;
-                proximoCliente = new StringBuilder();
-            } else {
-                cliente.append(proximoCliente);
-                proximoCliente = new StringBuilder();
-
-                clientesIguais = false;
-            }
-        }
-
-        scanner.close();
-
-        return clientes;
     }
 
 }
