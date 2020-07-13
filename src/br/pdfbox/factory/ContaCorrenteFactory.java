@@ -46,16 +46,16 @@ public class ContaCorrenteFactory {
     }
 
     private ContaCorrente construirContaCorrente(
-                                                        String nome,
-                                                        String logradouro,
-                                                        String cep,
-                                                        String cidade,
-                                                        String estado,
-                                                        String numeroConta,
-                                                        String saldoTotal,
-                                                        String saldoDisponivel,
-                                                        String saldoAnterior,
-                                                        List<Movimentacao> movimentacoes) {
+                                                 String nome,
+                                                 String logradouro,
+                                                 String cep,
+                                                 String cidade,
+                                                 String estado,
+                                                 String numeroConta,
+                                                 String saldoTotal,
+                                                 String saldoDisponivel,
+                                                 String saldoAnterior,
+                                                 List<Movimentacao> movimentacoes) {
 
         return ContaCorrente.criar(
                                    construirCliente(nome, construirEndereco(logradouro, cep, cidade, estado)),
