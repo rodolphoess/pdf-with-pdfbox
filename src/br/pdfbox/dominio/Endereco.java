@@ -2,10 +2,10 @@ package br.pdfbox.dominio;
 
 public class Endereco {
 
-    private String logradouro;
-    private String cep;
-    private String cidade;
-    private String estado;
+    private final String logradouro;
+    private final String cep;
+    private final String cidade;
+    private final String estado;
 
     private Endereco(String logradouro, String cep, String cidade, String estado) {
         this.logradouro = logradouro;

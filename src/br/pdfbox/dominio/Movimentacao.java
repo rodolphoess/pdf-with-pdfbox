@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class Movimentacao {
 
-    private String dataMovimentacao;
-    private BigDecimal valorMovimentado;
-    private BigDecimal saldoEmContaAposMovimentacao;
+    private final String dataMovimentacao;
+    private final BigDecimal valorMovimentado;
+    private final BigDecimal saldoEmContaAposMovimentacao;
 
     private Movimentacao(String dataMovimentacao, BigDecimal valorMovimentado, BigDecimal saldoEmContaAposMovimentacao) {
         this.dataMovimentacao = dataMovimentacao;

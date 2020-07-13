@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class InterPDF {
 
-    public String extractTextPdf(File file) {
+    public String extrairTextoPdf(File file) {
         String pdfText = "";
 
         try (PDDocument document = PDDocument.load(file)) {

@@ -2,8 +2,8 @@ package br.pdfbox.dominio;
 
 public class Cliente {
 
-    private String nome;
-    private Endereco endereco;
+    private final String nome;
+    private final Endereco endereco;
 
     private Cliente(String nome, Endereco endereco) {
         this.nome = nome;

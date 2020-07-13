@@ -5,12 +5,14 @@ import java.util.List;
 
 public class ContaCorrente {
 
-    private Cliente cliente;
+    private final Cliente cliente;
 
-    private String numeroDaConta;
-    private BigDecimal saldoTotal;
-    private BigDecimal saldoDisponivel;
-    private BigDecimal saldoAnterior;
+    private final String instituicaoFinanceira = "GENIAL";
+
+    private final String numeroDaConta;
+    private final BigDecimal saldoTotal;
+    private final BigDecimal saldoDisponivel;
+    private final BigDecimal saldoAnterior;
 
     private List<Movimentacao> movimentacoes;
 
@@ -29,6 +31,10 @@ public class ContaCorrente {
 
     public Cliente getCliente() {
         return cliente;
+    }
+
+    public String getInstituicaoFinanceira() {
+        return instituicaoFinanceira;
     }
 
     public String getNumeroDaConta() {
