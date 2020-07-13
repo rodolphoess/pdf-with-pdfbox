@@ -16,15 +16,11 @@ public class ContaCorrenteFactory {
     public static final int RETIRA_PIPES_E_ESPACOS = 4;
     public static final int RETIRA_PIPES = 2;
 
-    private int anoExtrato;
-
     public List<ContaCorrente> popularContasCorrentes(List<StringBuilder> clientes) {
 
         List<ContaCorrente> contasCorrentes = newArrayList();
 
         for (StringBuilder cliente : clientes) {
-
-            this.anoExtrato = extrairAnoExtrato(cliente);
 
             String nome = extrairNome(cliente);
 
@@ -110,7 +106,7 @@ public class ContaCorrenteFactory {
 
         for (String movimentacao : movimentacoesStringSeparadas) {
 
-            String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacao));
+            String dataMovimentacao = extrairDataMovimentacao(new StringBuilder(movimentacao), cliente);
             String valorMovimentado = extrairValorMovimentado(new StringBuilder(movimentacao));
             String saldoEmContaAposMovimentacao = extrairSaldoEmContaAposMovimentacao(new StringBuilder(movimentacao));
 
@@ -150,7 +146,7 @@ public class ContaCorrenteFactory {
         return aplicarFormatacaoBigDecimal(valorMovimentado);
     }
 
-    private String extrairDataMovimentacao(StringBuilder movimentacao) {
+    private String extrairDataMovimentacao(StringBuilder movimentacao, StringBuilder cliente) {
         if (movimentacao.length() < 10) {
             return "";
         }
@@ -165,8 +161,9 @@ public class ContaCorrenteFactory {
 
             int dia = Integer.parseInt(diaTexto);
             int mes = Integer.parseInt(mesTexto);
+            int ano = extrairAnoExtrato(cliente, mesTexto);
 
-            dataLocalDate = LocalDate.of(this.anoExtrato, mes, dia);
+            dataLocalDate = LocalDate.of(ano, mes, dia);
         } catch (Exception e) {
             return "";
         }
@@ -321,12 +318,45 @@ public class ContaCorrenteFactory {
         return cliente.substring(indiceInicioNome + RETIRA_PIPES_E_ESPACOS, indiceFimNome);
     }
 
-    private int extrairAnoExtrato(StringBuilder cliente) {
-        int indiceFinalAno = cliente.indexOf("|");
+    private int extrairAnoExtrato(StringBuilder cliente, String mesMovimentacao) {
+        int indiceFinalPeriodo = 0;
+        for (int linha = 0; linha < 5; linha++) {
+            indiceFinalPeriodo = cliente.indexOf(" || ", indiceFinalPeriodo + RETIRA_PIPES);
+        }
 
-        String anoString = cliente.substring(indiceFinalAno - 5, indiceFinalAno - 1);
+        int indiceInicioPeriodo = 0;
+        for (int linha = 0; linha < 4; linha++) {
+            indiceInicioPeriodo = cliente.indexOf(" || ", indiceInicioPeriodo + RETIRA_PIPES);
+        }
 
-        return Integer.parseInt(anoString);
+        String periodo = cliente.substring(indiceInicioPeriodo + RETIRA_PIPES_E_ESPACOS + 10, indiceFinalPeriodo);
+
+        int indicePrimeiraBarraDataInicial = periodo.indexOf("/");
+
+        int indiceSegundaBarraDataInicial = 0;
+        for (int barraData = 0; barraData < 2; barraData++) {
+            indiceSegundaBarraDataInicial = periodo.indexOf("/", indiceSegundaBarraDataInicial + 1);
+        }
+        String mesPeriodoInicial = periodo.substring(indicePrimeiraBarraDataInicial + 1, indiceSegundaBarraDataInicial);
+        String anoPeriodoInicial = periodo.substring(indiceSegundaBarraDataInicial + 1, indiceSegundaBarraDataInicial + 5);
+
+        int indicePrimeiraBarraDataFinal = 0;
+        for (int barraData = 0; barraData < 3; barraData++) {
+            indicePrimeiraBarraDataFinal = periodo.indexOf("/", indicePrimeiraBarraDataFinal + 1);
+        }
+
+        int indiceSegundaBarraDataFinal = 0;
+        for (int barraData = 0; barraData < 4; barraData++) {
+            indiceSegundaBarraDataFinal = periodo.indexOf("/", indiceSegundaBarraDataFinal + 1);
+        }
+
+        String anoPeriodoFinal = periodo.substring(indiceSegundaBarraDataFinal + 1, indiceSegundaBarraDataFinal + 5);
+
+        if (mesMovimentacao.equals(mesPeriodoInicial)) {
+            return Integer.parseInt(anoPeriodoInicial);
+        }
+
+        return Integer.parseInt(anoPeriodoFinal);
     }
 
     private String aplicarFormatacaoBigDecimal(String valor) {
