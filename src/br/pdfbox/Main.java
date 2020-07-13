@@ -14,7 +14,7 @@ public class Main {
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
-            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-maio.pdf");
+            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-junho.pdf");
 
             // Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java
             InterPDF interPDF = new InterPDF();

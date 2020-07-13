@@ -13,17 +13,24 @@ import static com.google.common.collect.Lists.newArrayList;
 public class InterExtratoContasCorrentesGenialPDF {
 
     public String extrairInformacoesContasCorrentes(String conteudo) throws JsonProcessingException {
-        List<StringBuilder> clientes = separarStringPorCliente(conteudo);
+        String json = "";
+        try {
+            List<StringBuilder> clientes = separarStringPorCliente(conteudo);
 
-        ContaCorrenteFactory contaCorrenteFactory = new ContaCorrenteFactory();
-        List<ContaCorrente> contasCorrentes = contaCorrenteFactory.popularContasCorrentes(clientes);
+            ContaCorrenteFactory contaCorrenteFactory = new ContaCorrenteFactory();
+            List<ContaCorrente> contasCorrentes = contaCorrenteFactory.popularContasCorrentes(clientes);
 
-        ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper();
 
-        return mapper.writeValueAsString(contasCorrentes);
+            json = mapper.writeValueAsString(contasCorrentes);
+        } catch (JsonProcessingException e) {
+            System.out.println(e);
+        }
+
+        return json;
     }
 
-    public List<StringBuilder> separarStringPorCliente(String conteudo) {
+    private List<StringBuilder> separarStringPorCliente(String conteudo) {
 
         List<StringBuilder> clientes = newArrayList();
         Scanner scanner = new Scanner(conteudo);
