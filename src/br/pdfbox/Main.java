@@ -4,6 +4,7 @@ import br.pdfbox.extratocontacorrentegenial.InterExtratoContasCorrentesGenialPDF
 import br.pdfbox.pdfimport.InterPDF;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 public class Main {
 
@@ -13,11 +14,13 @@ public class Main {
 
             long tempoInicial = System.currentTimeMillis(); //TODO: Retirar
 
-            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-maio.pdf");
+            File file = new File("../pdf-with-pdfbox/src/br/pdfbox/pdfcontas/extrato-completo-abril.pdf");
+
+            FileInputStream fileInputStream = new FileInputStream(file);
 
             // Início do serviço geral de leitura de PDF recebendo como parâmetro o path e retornando a String bruta com o conteúdo do PDF. InterPDF.java
             InterPDF interPDF = new InterPDF();
-            String conteudoBrutoPdf = interPDF.extrairTextoPdf(file);
+            String conteudoBrutoPdf = interPDF.extrairTextoPdf(fileInputStream);
             // Final do serviço geral de leitura de PDF.
 
             // Serviço para leitura de extrato de contas correntes. InterExtratoContasCorrentesGenialPDF.java
